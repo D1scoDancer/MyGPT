@@ -4,12 +4,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.springframework.stereotype.Component;
 
 import javax.management.relation.Role;
 
 /**
  * @author Aleksey Shulikov
  */
+@Component
 public class OpenAIMessageConstructor {
 
     private static final String MODEL_PARAM = "model";
@@ -22,7 +24,7 @@ public class OpenAIMessageConstructor {
 
     private static final String ROLE = ROLES.USER.name();
 
-    public static String makeMessage(String model, String content) throws JsonProcessingException {
+    public String makeMessage(String model, String content) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode rootNode = mapper.createObjectNode();
         rootNode.put(MODEL_PARAM, model);

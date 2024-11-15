@@ -9,12 +9,11 @@ import org.springframework.context.annotation.Configuration;
  */
 @Getter
 @Configuration
-public class gitBotConfig {
+public class BotConfig {
 
     @Value("${telegram.bot.token}")
     private String botToken;
 
     @Value("${telegram.bot.name}")
     private String botUsername;
-
 }
