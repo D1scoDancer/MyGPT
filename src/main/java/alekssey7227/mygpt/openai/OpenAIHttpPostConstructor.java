@@ -2,6 +2,7 @@ package alekssey7227.mygpt.openai;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -11,6 +12,7 @@ import org.apache.http.util.EntityUtils;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author Aleksey Shulikov
@@ -23,7 +25,7 @@ public class OpenAIHttpPostConstructor {
     private static final String URL = "https://api.openai.com/v1/chat/completions";
     private static final String CONTENT_TYPE_HDR_PARAM = "Content-Type";
     private static final String AUTHORIZATION_HDR_PARAM = "Authorization";
-    private static final String CONTENT_TYPE = "application/json";
+    private static final String CONTENT_TYPE = "application/json; charset=utf-8";
     private static final String AUTHORIZATION = "Bearer ";
 
     private final OpenAIConfig openAIConfig;
@@ -35,6 +37,7 @@ public class OpenAIHttpPostConstructor {
     }
 
     public String sendHttpPostMessage(String model, String content) throws JsonProcessingException {
+        log.info("Получен запрос на отправку сообщения: `" + content + "` модели " + model);
         String responseBody = null;
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             HttpPost post = new HttpPost(URL);
@@ -44,13 +47,12 @@ public class OpenAIHttpPostConstructor {
 
             String json = messageConstructor.makeMessage(model, content);
 
-            StringEntity entity = new StringEntity(json);
+            StringEntity entity = new StringEntity(json, StandardCharsets.UTF_8);
             post.setEntity(entity);
 
             HttpResponse response = client.execute(post);
             responseBody = EntityUtils.toString(response.getEntity());
 
-            log.info(responseBody);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
